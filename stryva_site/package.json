@@ -1,0 +1,16 @@
+{
+  "name": "stryva-backend",
+  "version": "1.0.0",
+  "description": "Backend Node.js/Express pour STRYVA (paiement Stripe, email, etc.)",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^16.0.3",
+    "express": "^4.18.2",
+    "nodemailer": "^6.9.11",
+    "stripe": "^12.6.0"
+  }
+}
