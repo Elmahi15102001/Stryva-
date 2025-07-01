@@ -9,9 +9,19 @@ const nodemailer = require('nodemailer');
 // Autoriser uniquement le frontend Vercel
 app.use(cors({
   origin: 'https://stryva.vercel.app', // Remplace par ton URL Vercel si différente
-  methods: ['GET', 'POST'],
+  methods: ['GET', 'POST', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
   credentials: true
 }));
+
+// Gérer explicitement les requêtes OPTIONS pour toutes les routes
+app.options('*', cors({
+  origin: 'https://stryva.vercel.app',
+  methods: ['GET', 'POST', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+  credentials: true
+}));
+
 app.use(express.static('public'));
 app.use(express.json());
 
