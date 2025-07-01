@@ -6,7 +6,12 @@ const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
 const cors = require('cors');
 const nodemailer = require('nodemailer');
 
-app.use(cors());
+// Autoriser uniquement le frontend Vercel
+app.use(cors({
+  origin: 'https://stryva.vercel.app', // Remplace par ton URL Vercel si différente
+  methods: ['GET', 'POST'],
+  credentials: true
+}));
 app.use(express.static('public'));
 app.use(express.json());
 
