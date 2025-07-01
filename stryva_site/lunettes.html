@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>STRYVA - Nos lunettes</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header>
+    <nav class="main-nav">
+      <div class="logo">STRYVA</div>
+      <ul>
+        <li><a href="index.html">Accueil</a></li>
+        <li><a href="lunettes.html" class="active">Nos lunettes</a></li>
+        <li><a href="panier.html">Panier</a></li>
+        <li><a href="livraison.html">Livraison</a></li>
+      </ul>
+    </nav>
+  </header>
+  <main>
+    <h1 class="page-title">Nos modèles de lunettes</h1>
+    <div class="produits">
+      <article class="produit">
+        <img src="images/modele1.jpg" alt="STRYVA Phantom">
+        <h3>STRYVA Phantom</h3>
+        <p class="prix">129,00 €</p>
+        <a href="produit-phantom.html" class="cta-btn mini">Voir ce modèle</a>
+      </article>
+      <article class="produit">
+        <img src="images/modele2.jpg" alt="STRYVA Blade">
+        <h3>STRYVA Blade</h3>
+        <p class="prix">119,00 €</p>
+        <a href="produit-blade.html" class="cta-btn mini">Voir ce modèle</a>
+      </article>
+      <article class="produit">
+        <img src="images/modele3.jpg" alt="STRYVA Fusion">
+        <h3>STRYVA Fusion</h3>
+        <p class="prix">139,00 €</p>
+        <a href="produit-fusion.html" class="cta-btn mini">Voir ce modèle</a>
+      </article>
+    </div>
+  </main>
+  <!-- Panier flottant (icône lunettes) -->
+  <div id="cart-float" title="Voir le panier">
+    <svg viewBox="0 0 64 32" width="38" height="19" class="cart-icon">
+      <ellipse cx="16" cy="16" rx="14" ry="12" fill="#101214" stroke="#00c3ff" stroke-width="3"/>
+      <ellipse cx="48" cy="16" rx="14" ry="12" fill="#101214" stroke="#00c3ff" stroke-width="3"/>
+      <rect x="16" y="13" width="32" height="6" rx="3" fill="#00c3ff"/>
+    </svg>
+    <span id="cart-count">0</span>
+  </div>
+  <!-- Fenêtre pop-up panier -->
+  <div id="cart-popup" class="cart-popup">
+    <div class="cart-popup-header">
+      <span>Votre panier</span>
+      <button id="close-cart" aria-label="Fermer">✕</button>
+    </div>
+    <div id="cart-popup-list"></div>
+    <div id="cart-popup-total"></div>
+    <div class="cart-popup-actions">
+      <a href="lunettes.html" class="cta-btn mini">Ajouter des lunettes</a>
+      <button id="stripe-checkout" class="cta-btn">Payer avec Stripe</button>
+    </div>
+  </div>
+  <footer>
+    <p>© 2025 STRYVA. Tous droits réservés.</p>
+  </footer>
+  <script src="https://js.stripe.com/v3/"></script>
+  <script src="script.js"></script>
+  <script>
+    // Stripe Checkout integration
+    document.getElementById('stripe-checkout').addEventListener('click', function() {
+      fetch('/create-checkout-session', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      })
+      .then(function(response) {
+        return response.json();
+      })
+      .then(function(session) {
+        var stripe = Stripe('pk_test_51RfpdWR77l8Z8CmrGCkx23IcUeHDG0jtiWT3bz9PrVtdBfhXiVWEtQytsD5RreGhhtgo29fDQ8NwlLCoQY1sNx8z00VEhxXaRd');
+        return stripe.redirectToCheckout({ sessionId: session.id });
+      })
+      .then(function(result) {
+        if (result && result.error) {
+          alert(result.error.message);
+        }
+      })
+      .catch(function(error) {
+        console.error('Erreur Stripe:', error);
+      });
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>STRYVA Blade - Fiche produit</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header>
+    <nav class="main-nav">
+      <div class="logo">STRYVA</div>
+      <ul>
+        <li><a href="index.html">Accueil</a></li>
+        <li><a href="lunettes.html">Nos lunettes</a></li>
+        <li><a href="panier.html">Panier</a></li>
+        <li><a href="livraison.html">Livraison</a></li>
+      </ul>
+    </nav>
+  </header>
+  <main class="fade-in">
+    <div class="fiche-produit">
+      <img src="images/modele2.jpg" alt="STRYVA Blade">
+      <div class="fiche-desc">
+        <h1>STRYVA Blade</h1>
+        <p>Monture flexible, verres polarisés, style urbain et sportif, confort optimal pour toutes vos activités. Un must pour la ville et l’aventure.</p>
+        <div class="prix">119,00 €</div>
+        <button class="add-panier" data-id="blade" data-nom="STRYVA Blade" data-prix="119" data-img="images/modele2.jpg">Ajouter au panier</button>
+        <a href="lunettes.html" class="cta-btn retour">Retour à Nos lunettes</a>
+      </div>
+    </div>
+  </main>
+  <!-- Panier flottant (icône lunettes) -->
+  <div id="cart-float" title="Voir le panier">
+    <svg viewBox="0 0 64 32" width="38" height="19" class="cart-icon">
+      <ellipse cx="16" cy="16" rx="14" ry="12" fill="#101214" stroke="#00c3ff" stroke-width="3"/>
+      <ellipse cx="48" cy="16" rx="14" ry="12" fill="#101214" stroke="#00c3ff" stroke-width="3"/>
+      <rect x="16" y="13" width="32" height="6" rx="3" fill="#00c3ff"/>
+    </svg>
+    <span id="cart-count">0</span>
+  </div>
+  <!-- Fenêtre pop-up panier -->
+  <div id="cart-popup" class="cart-popup">
+    <div class="cart-popup-header">
+      <span>Votre panier</span>
+      <button id="close-cart" aria-label="Fermer">✕</button>
+    </div>
+    <div id="cart-popup-list"></div>
+    <div id="cart-popup-total"></div>
+    <div class="cart-popup-actions">
+      <a href="lunettes.html" class="cta-btn mini">Ajouter des lunettes</a>
+      <button id="go-livraison" class="cta-btn">Commander</button>
+    </div>
+  </div>
+  <footer>
+    <p>© 2025 STRYVA. Tous droits réservés.</p>
+  </footer>
+  <script src="script.js"></script>
+</body>
+</html>

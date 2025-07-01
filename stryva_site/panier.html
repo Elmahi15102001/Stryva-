@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>STRYVA - Panier</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header>
+    <nav class="main-nav">
+      <div class="logo">STRYVA</div>
+      <ul>
+        <li><a href="index.html">Accueil</a></li>
+        <li><a href="lunettes.html">Nos lunettes</a></li>
+        <li><a href="panier.html" class="active">Panier</a></li>
+        <li><a href="livraison.html">Livraison</a></li>
+      </ul>
+    </nav>
+  </header>
+  <main>
+    <h1 class="page-title">Votre panier</h1>
+    <div id="panier-list"></div>
+    <div id="panier-total"></div>
+    <div class="goto-livraison">
+      <a href="livraison.html" class="cta-btn" id="valider-commande">Valider la commande</a>
+    </div>
+    <div class="cart-popup-actions">
+      <a href="lunettes.html" class="cta-btn mini">Ajouter des lunettes</a>
+      <a href="paiement.html" class="cta-btn">Payer</a>
+    </div>
+  </main>
+  <footer>
+    <p>© 2025 STRYVA. Tous droits réservés.</p>
+  </footer>
+  <script src="script.js"></script>
+</body>
+</html>
+fetch('https://mon-backend-stryva.onrender.com/create-checkout-session', {
+  method: 'POST',
+  headers: {
+    'Content-Type': 'application/json'
+  },
+  body: JSON.stringify({ cart })
+})

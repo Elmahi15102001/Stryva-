@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>STRYVA - Paiement</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header>
+    <nav class="main-nav">
+      <div class="logo">STRYVA</div>
+      <ul>
+        <li><a href="index.html">Accueil</a></li>
+        <li><a href="lunettes.html">Nos lunettes</a></li>
+        <li><a href="panier.html">Panier</a></li>
+      </ul>
+    </nav>
+  </header>
+  <main class="fade-in">
+    <h1 class="page-title">Paiement sécurisé</h1>
+    <form id="livraison-form" class="form-paiement" style="margin-bottom:2em;max-width:520px;margin-left:auto;margin-right:auto;">
+      <h2 style="color:#00c3ff;font-size:1.2rem;margin-bottom:1.2em;margin-top:0;font-weight:700;letter-spacing:0.04em;">Adresse de livraison</h2>
+      <div class="paiement-fields">
+        <label for="nom-livraison">Nom complet</label>
+        <input type="text" id="nom-livraison" required>
+        <label for="adresse-livraison">Adresse</label>
+        <input type="text" id="adresse-livraison" required>
+        <label for="cp-livraison">Code postal</label>
+        <input type="text" id="cp-livraison" required pattern="[0-9]{5}">
+        <label for="ville-livraison">Ville</label>
+        <input type="text" id="ville-livraison" required>
+        <label for="email-livraison">Email</label>
+        <input type="email" id="email-livraison" required>
+      </div>
+    </form>
+    <div id="recap-panier" style="margin-bottom:2em;"></div>
+    <form id="payment-form">
+      <div id="card-element"><!-- Stripe Elements ici --></div>
+      <button type="submit" class="cta-btn">Payer</button>
+      <div id="payment-message" style="margin-top:1em;color:#00c3ff;"></div>
+    </form>
+  </main>
+  <footer>
+    <p>© 2025 STRYVA. Tous droits réservés.</p>
+  </footer>
+  <script src="https://js.stripe.com/v3/"></script>
+  <script>
+    function afficherRecapPanier() {
+      const panier = JSON.parse(localStorage.getItem('panierStryva') || '[]');
+      if (!panier.length) {
+        document.getElementById('recap-panier').innerHTML = "<b>Votre panier est vide.</b>";
+        return;
+      }
+      let html = "<h2>Récapitulatif</h2><ul>";
+      let total = 0;
+      panier.forEach(item => {
+        html += `<li>${item.nom} x${item.qte} — ${(item.prix * item.qte).toFixed(2)} €</li>`;
+        total += item.prix * item.qte;
+      });
+      html += `</ul><div style="font-weight:bold;">Total : ${total.toFixed(2)} €</div>`;
+      document.getElementById('recap-panier').innerHTML = html;
+    }
+    afficherRecapPanier();
+
+    const stripe = Stripe('pk_test_51RfpdWR77l8Z8CmrGCkx23IcUeHDG0jtiWT3bz9PrVtdBfhXiVWEtQytsD5RreGhhtgo29fDQ8NwlLCoQY1sNx8z00VEhxXaRd');
+    const elements = stripe.elements();
+    const cardElement = elements.create('card');
+    cardElement.mount('#card-element');
+
+    document.getElementById('payment-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const panier = JSON.parse(localStorage.getItem('panierStryva') || '[]');
+      const total = panier.reduce((sum, item) => sum + item.prix * item.qte, 0) * 100; // en centimes
+      if (total === 0) {
+        document.getElementById('payment-message').textContent = 'Votre panier est vide.';
+        return;
+      }
+      // Récupère l'adresse de livraison
+      const livraison = {
+        nom: document.getElementById('nom-livraison').value.trim(),
+        adresse: document.getElementById('adresse-livraison').value.trim(),
+        cp: document.getElementById('cp-livraison').value.trim(),
+        ville: document.getElementById('ville-livraison').value.trim(),
+        email: document.getElementById('email-livraison').value.trim()
+      };
+      const res = await fetch('https://mon-backend-stryva.onrender.com/create-payment-intent', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ amount: total, livraison })
+      });
+      const data = await res.json();
+      if (!data.clientSecret) {
+        document.getElementById('payment-message').textContent = 'Erreur serveur Stripe.';
+        return;
+      }
+      const { error, paymentIntent } = await stripe.confirmCardPayment(data.clientSecret, {
+        payment_method: { card: cardElement }
+      });
+      if (error) {
+        document.getElementById('payment-message').textContent = error.message;
+      } else if (paymentIntent && paymentIntent.status === 'succeeded') {
+        document.getElementById('payment-message').textContent = 'Paiement réussi !';
+        localStorage.removeItem('panierStryva');
+      }
+    });
+
+    // Validation du formulaire de livraison avant paiement
+    document.getElementById('payment-form').addEventListener('submit', function(e) {
+      const nom = document.getElementById('nom-livraison').value.trim();
+      const adresse = document.getElementById('adresse-livraison').value.trim();
+      const cp = document.getElementById('cp-livraison').value.trim();
+      const ville = document.getElementById('ville-livraison').value.trim();
+      if (!nom || !adresse || !cp || !ville) {
+        e.preventDefault();
+        document.getElementById('payment-message').textContent = 'Merci de remplir tous les champs de livraison.';
+        return false;
+      }
+    }, true);
+  </script>
+</body>
+</html>

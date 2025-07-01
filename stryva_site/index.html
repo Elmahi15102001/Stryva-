@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>STRYVA - Lunettes Sport & Style</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Lunettes sportives haute performance, élégantes et robustes. Découvrez la collection STRYVA 2025.">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <!-- Loader -->
+  <div id="loader">
+    <div class="loader-logo">STRYVA</div>
+    <div class="loader-bar"></div>
+  </div>
+
+  <div id="site-content" style="display:none;">
+    <header>
+      <nav class="main-nav">
+        <div class="logo">STRYVA</div>
+        <ul>
+          <li><a href="index.html">Accueil</a></li>
+          <li><a href="lunettes.html">Nos lunettes</a></li>
+          <li><a href="panier.html">Panier</a></li>
+          <li><a href="livraison.html">Livraison</a></li>
+        </ul>
+      </nav>
+      <div class="hero">
+        <h1>STRYVA</h1>
+        <p>Lunettes sportives haute performance</p>
+        <a href="lunettes.html" class="cta-btn">Voir nos modèles</a>
+      </div>
+    </header>
+
+    <main>
+      <section id="modeles">
+        <h2>Nos modèles</h2>
+        <div class="produits">
+          <article class="produit">
+            <img src="images/modele1.jpg" alt="Modèle 1 STRYVA">
+            <h3>STRYVA X1</h3>
+            <p>Robustes, légères, idéales pour le cyclisme et la course.</p>
+          </article>
+          <article class="produit">
+            <img src="images/modele2.jpg" alt="Modèle 2 STRYVA">
+            <h3>STRYVA Urban</h3>
+            <p>Style urbain, protection UV400, confort optimal au quotidien.</p>
+          </article>
+          <article class="produit">
+            <img src="images/modele3.jpg" alt="Modèle 3 STRYVA">
+            <h3>STRYVA Trail</h3>
+            <p>Conçues pour l’aventure, verres polarisés et monture flexible.</p>
+          </article>
+        </div>
+      </section>
+
+      <section id="avantages">
+        <h2>Pourquoi choisir STRYVA ?</h2>
+        <ul class="avantages">
+          <li>Verres polarisés haute performance</li>
+          <li>Montures ultra-légères et résistantes</li>
+          <li>Design moderne et ergonomique</li>
+          <li>Garantie 2 ans</li>
+        </ul>
+      </section>
+
+      <section id="contact">
+        <h2>Contactez-nous</h2>
+        <form>
+          <label for="nom">Nom</label>
+          <input type="text" id="nom" name="nom" required>
+          <label for="email">Email</label>
+          <input type="email" id="email" name="email" required>
+          <label for="message">Message</label>
+          <textarea id="message" name="message" required></textarea>
+          <button type="submit">Envoyer</button>
+        </form>
+      </section>
+    </main>
+
+    <footer>
+      <p>© 2025 STRYVA. Tous droits réservés.</p>
+      <div class="reseaux">
+        <a href="#" aria-label="Instagram"><img src="images/instagram.svg" alt="Instagram"></a>
+        <a href="#" aria-label="Facebook"><img src="images/facebook.svg" alt="Facebook"></a>
+      </div>
+    </footer>
+  </div>
+
+  <!-- Panier flottant (icône lunettes) -->
+  <div id="cart-float" title="Voir le panier">
+    <svg viewBox="0 0 64 32" width="38" height="19" class="cart-icon">
+      <ellipse cx="16" cy="16" rx="14" ry="12" fill="#101214" stroke="#00c3ff" stroke-width="3"/>
+      <ellipse cx="48" cy="16" rx="14" ry="12" fill="#101214" stroke="#00c3ff" stroke-width="3"/>
+      <rect x="16" y="13" width="32" height="6" rx="3" fill="#00c3ff"/>
+    </svg>
+    <span id="cart-count">0</span>
+  </div>
+  <!-- Fenêtre pop-up panier -->
+  <div id="cart-popup" class="cart-popup">
+    <div class="cart-popup-header">
+      <span>Votre panier</span>
+      <button id="close-cart" aria-label="Fermer">✕</button>
+    </div>
+    <div id="cart-popup-list"></div>
+    <div id="cart-popup-total"></div>
+    <div class="cart-popup-actions">
+      <a href="lunettes.html" class="cta-btn mini">Ajouter des lunettes</a>
+      <button id="stripe-checkout" class="cta-btn">Payer avec Stripe</button>
+    </div>
+  </div>
+
+  <script src="https://js.stripe.com/v3/"></script>
+  <script src="script.js"></script>
+  <script>
+    // Simple loader
+    window.addEventListener('load', function() {
+      setTimeout(function() {
+        document.getElementById('loader').style.display = 'none';
+        document.getElementById('site-content').style.display = 'block';
+      }, 1200); // 1.2s pour l'effet
+    });
+
+    // Stripe Checkout integration
+    document.getElementById('stripe-checkout').addEventListener('click', function() {
+      fetch('https://mon-backend-stryva.onrender.com/create-checkout-session', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      })
+      .then(function(response) {
+        return response.json();
+      })
+      .then(function(session) {
+        var stripe = Stripe('pk_test_51RfpdWR77l8Z8CmrGCkx23IcUeHDG0jtiWT3bz9PrVtdBfhXiVWEtQytsD5RreGhhtgo29fDQ8NwlLCoQY1sNx8z00VEhxXaRd');
+        return stripe.redirectToCheckout({ sessionId: session.id });
+      })
+      .then(function(result) {
+        if (result && result.error) {
+          alert(result.error.message);
+        }
+      })
+      .catch(function(error) {
+        console.error('Erreur Stripe:', error);
+      });
+    });
+  </script>
+</body>
+</html>
